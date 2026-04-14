@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="모온 회복 트래커 — 나는 언제 무너지고, 무엇으로 다시 서는가">
+<meta property="og:title" content="🌙 모온 회복 트래커">
+<meta property="og:description" content="나는 언제 무너지고, 무엇으로 다시 서는가. 자청 《완벽한 원시인》 15버튼 기반.">
+<meta property="og:type" content="website">
+<title>🌙 모온 회복 트래커</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=DM+Serif+Display&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F0EEE9;
+    --grey: #D6D1CB;
+    --sage: #A8B8A1;
+    --sage-light: #dbe3d8;
+    --peach: #E6CFC3;
+    --navy: #2E3A44;
+    --navy-light: #3d4f5c;
+    --text: #2E3A44;
+    --text-soft: #6b7c87;
+    --card: #ffffff;
+    --border: #e0dbd4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    height: 100%;
+    background: var(--cream);
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    padding: 20px 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(46,58,68,0.15);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .moon-icon { font-size: 22px; }
+  .header-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 17px;
+    color: var(--cream);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+  .header-sub {
+    font-size: 10px;
+    color: var(--sage);
+    margin-left: auto;
+    letter-spacing: 0.03em;
+    background: rgba(168,184,161,0.15);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 1;
+    min-width: 70px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 11px;
+    color: rgba(240,238,233,0.45);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .tab.active {
+    color: var(--sage-light);
+    border-bottom: 2px solid var(--sage);
+  }
+  .tab:hover:not(.active) { color: rgba(240,238,233,0.7); }
+
+  /* CONTENT */
+  .content {
+    padding: 20px 16px 100px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .panel { display: none; animation: fadeIn 0.3s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    margin: 20px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* CARD */
+  .card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(46,58,68,0.04);
+  }
+
+  /* TEXTAREA / INPUT */
+  textarea, input[type="text"] {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--cream);
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  textarea:focus, input[type="text"]:focus { border-color: var(--sage); }
+  textarea { height: 80px; }
+
+  /* CHOICE BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .btn-choice {
+    flex: 1;
+    min-width: 44px;
+    padding: 9px 4px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    font-size: 12px;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .btn-choice.selected {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: white;
+  }
+  .btn-choice:hover:not(.selected) {
+    border-color: var(--sage);
+    color: var(--navy);
+  }
+
+  /* RATING */
+  .rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .rating-row:last-child { border-bottom: none; }
+  .rating-label {
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .rating-dots { display: flex; gap: 5px; }
+  .dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-soft);
+    transition: all 0.15s;
+  }
+  .dot.selected {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: white;
+  }
+
+  /* TOGGLE Y/N */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label {
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+  .toggle-badge {
+    font-size: 9px;
+    background: var(--sage-light);
+    color: var(--navy);
+    padding: 2px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .yn-btns { display: flex; gap: 6px; margin-left: 8px; }
+  .yn-btn {
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-size: 12px;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .yn-btn.yes.selected { background: var(--sage); border-color: var(--sage); color: white; }
+  .yn-btn.no.selected { background: var(--peach); border-color: var(--peach); color: var(--navy); }
+
+  /* SAVE BUTTON */
+  .save-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--navy);
+    color: var(--cream);
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-family: 'Noto Serif KR', serif;
+    cursor: pointer;
+    margin-top: 20px;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .save-btn:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(46,58,68,0.2); }
+  .save-btn:active { transform: translateY(0); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: var(--cream);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 9999;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(46,58,68,0.25);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* INSIGHT CARD */
+  .insight-card {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 12px;
+    color: var(--cream);
+  }
+  .insight-title {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--sage);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .insight-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* GRAPH */
+  .graph-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 9px;
+  }
+  .graph-label { font-size: 11px; color: var(--text-soft); width: 36px; flex-shrink: 0; }
+  .graph-track {
+    flex: 1;
+    height: 26px;
+    background: var(--border);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .graph-fill {
+    height: 100%;
+    border-radius: 7px;
+    transition: width 1s cubic-bezier(0.16,1,0.3,1);
+  }
+  .graph-fill.normal { background: var(--sage); }
+  .graph-fill.low { background: var(--peach); }
+  .graph-fill.event { background: var(--peach); opacity: 0.5; }
+  .graph-num { font-size: 11px; color: var(--text-soft); width: 28px; text-align: right; }
+
+  /* BUTTON GUIDE */
+  .button-level {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    margin: 18px 0 8px;
+    font-weight: 500;
+  }
+  .button-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s;
+  }
+  .button-item:hover { border-color: var(--sage); }
+  .button-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--sage-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--navy);
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .button-name { font-size: 13px; color: var(--text); margin-bottom: 3px; font-weight: 500; }
+  .button-desc { font-size: 11px; color: var(--text-soft); line-height: 1.5; }
+
+  /* STATS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .stat-box {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--navy);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 11px; color: var(--text-soft); }
+
+  .trigger-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 7px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .trigger-rank {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--sage);
+    width: 22px;
+  }
+
+  /* SHARE BUTTON */
+  .share-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--sage);
+    color: var(--navy);
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .share-btn:hover { background: #96a88f; transform: translateY(-1px); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-soft);
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 14px; }
+  .empty-state p { font-size: 13px; line-height: 1.8; }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    margin-top: 30px;
+    padding: 18px;
+    background: var(--sage-light);
+    border-radius: 12px;
+    text-align: center;
+  }
+  .footer-note p { font-size: 11px; color: var(--navy-light); line-height: 1.8; }
+  .footer-note a { color: var(--navy); font-weight: 500; text-decoration: underline; }
+
+  .date-chip {
+    display: inline-block;
+    background: var(--sage-light);
+    color: var(--navy);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  /* HISTORY LIST */
+  .history-item {
+    background: white;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+  .history-date { font-size: 11px; color: var(--sage); margin-bottom: 4px; }
+  .history-event { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <span class="moon-icon">🌙</span>
+    <span class="header-title">모온 회복 트래커</span>
+    <span class="header-sub" id="recordCountBadge" style="display:none;"></span>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('today')">오늘 기록</div>
+    <div class="tab" onclick="switchTab('pattern')">패턴</div>
+    <div class="tab" onclick="switchTab('monthly')">월간</div>
+    <div class="tab" onclick="switchTab('buttons')">15버튼</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- TAB 1: 오늘 기록 -->
+  <div class="panel active" id="panel-today">
+    <div class="date-chip" id="todayDate"></div>
+
+    <div class="section-label">좌절 사건</div>
+    <div class="card">
+      <textarea id="eventText" placeholder="오늘 힘든 일이 있었나요? 짧게 적어도 괜찮아요."></textarea>
+
+      <div style="margin-top:14px;">
+        <div style="font-size:12px; color:var(--text-soft); margin-bottom:8px;">강도</div>
+        <div class="btn-row" id="intensityBtns">
+          <div class="btn-choice" onclick="selectIntensity(1)">1</div>
+          <div class="btn-choice" onclick="selectIntensity(2)">2</div>
+          <div class="btn-choice" onclick="selectIntensity(3)">3</div>
+          <div class="btn-choice" onclick="selectIntensity(4)">4</div>
+          <div class="btn-choice" onclick="selectIntensity(5)">5</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div style="font-size:12px; color:var(--text-soft); margin-bottom:8px;">즉각 반응</div>
+        <div class="btn-row" id="reactionBtns">
+          <div class="btn-choice" onclick="selectReaction('회피')">회피</div>
+          <div class="btn-choice" onclick="selectReaction('과잉')">과잉</div>
+          <div class="btn-choice" onclick="selectReaction('무감각')">무감각</div>
+          <div class="btn-choice" onclick="selectReaction('폭발')">폭발</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">저녁 상태 체크</div>
+    <div class="card">
+      <div class="rating-row">
+        <span class="rating-label">🔋 에너지</span>
+        <div class="rating-dots" id="energyDots">
+          <div class="dot" onclick="selectRating('energy',1)">1</div>
+          <div class="dot" onclick="selectRating('energy',2)">2</div>
+          <div class="dot" onclick="selectRating('energy',3)">3</div>
+          <div class="dot" onclick="selectRating('energy',4)">4</div>
+          <div class="dot" onclick="selectRating('energy',5)">5</div>
+        </div>
+      </div>
+      <div class="rating-row">
+        <span class="rating-label">🎯 집중력</span>
+        <div class="rating-dots" id="focusDots">
+          <div class="dot" onclick="selectRating('focus',1)">1</div>
+          <div class="dot" onclick="selectRating('focus',2)">2</div>
+          <div class="dot" onclick="selectRating('focus',3)">3</div>
+          <div class="dot" onclick="selectRating('focus',4)">4</div>
+          <div class="dot" onclick="selectRating('focus',5)">5</div>
+        </div>
+      </div>
+      <div class="rating-row" style="flex-direction:column; align-items:flex-start; gap:10px; border-bottom:none;">
+        <span class="rating-label">💧 가장 소진된 것</span>
+        <input type="text" id="drainText" placeholder="한 단어로 (예: 비교, 거절, 과부하)" style="height:auto; padding:10px 12px;">
+      </div>
+    </div>
+
+    <div class="section-label">버튼 상태 — 완벽한 원시인</div>
+    <div class="card">
+      <div class="toggle-row">
+        <span class="toggle-label">😴 잠 잘 잤나요? <span class="toggle-badge">B1 수면</span></span>
+        <div class="yn-btns">
+          <div class="yn-btn yes" onclick="selectYN('sleep','Y',this)">Y</div>
+          <div class="yn-btn no" onclick="selectYN('sleep','N',this)">N</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">💧 물 충분히? <span class="toggle-badge">B2 물</span></span>
+        <div class="yn-btns">
+          <div class="yn-btn yes" onclick="selectYN('water','Y',this)">Y</div>
+          <div class="yn-btn no" onclick="selectYN('water','N',this)">N</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">🚶 오늘 걸었나요? <span class="toggle-badge">B5 걷기</span></span>
+        <div class="yn-btns">
+          <div class="yn-btn yes" onclick="selectYN('walk','Y',this)">Y</div>
+          <div class="yn-btn no" onclick="selectYN('walk','N',this)">N</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">👥 누군가 만났나요? <span class="toggle-badge">B11 대면</span></span>
+        <div class="yn-btns">
+          <div class="yn-btn yes" onclick="selectYN('meet','Y',this)">Y</div>
+          <div class="yn-btn no" onclick="selectYN('meet','N',this)">N</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">🌿 여백이 있었나요? <span class="toggle-badge">B14 여백</span></span>
+        <div class="yn-btns">
+          <div class="yn-btn yes" onclick="selectYN('rest','Y',this)">Y</div>
+          <div class="yn-btn no" onclick="selectYN('rest','N',this)">N</div>
+        </div>
+      </div>
+      <div class="toggle-row" style="border-bottom:none;">
+        <span class="toggle-label">😬 타인에게 날카로웠나요?</span>
+        <div class="yn-btns">
+          <div class="yn-btn yes" onclick="selectYN('sharp','Y',this)">Y</div>
+          <div class="yn-btn no" onclick="selectYN('sharp','N',this)">N</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">회복 기록</div>
+    <div class="card">
+      <div style="font-size:12px; color:var(--text-soft); margin-bottom:10px;">회복에 도움된 것 (복수 선택)</div>
+      <div class="btn-row" id="recoveryBtns" style="flex-wrap:wrap;">
+        <div class="btn-choice" style="min-width:80px;" onclick="toggleRecovery(this,'수면')">😴 수면</div>
+        <div class="btn-choice" style="min-width:80px;" onclick="toggleRecovery(this,'혼자있기')">🚪 혼자있기</div>
+        <div class="btn-choice" style="min-width:80px;" onclick="toggleRecovery(this,'걷기')">🚶 걷기</div>
+        <div class="btn-choice" style="min-width:80px;" onclick="toggleRecovery(this,'대화')">💬 대화</div>
+        <div class="btn-choice" style="min-width:80px;" onclick="toggleRecovery(this,'아무것도 안 하기')">☁️ 아무것도</div>
+        <div class="btn-choice" style="min-width:80px;" onclick="toggleRecovery(this,'작은 성취')">✅ 작은 성취</div>
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="saveToday()">🌙 오늘 기록 저장</button>
+  </div>
+
+  <!-- TAB 2: 패턴 -->
+  <div class="panel" id="panel-pattern">
+    <div id="patternContent"></div>
+  </div>
+
+  <!-- TAB 3: 월간 -->
+  <div class="panel" id="panel-monthly">
+    <div id="monthlyContent"></div>
+  </div>
+
+  <!-- TAB 4: 15버튼 -->
+  <div class="panel" id="panel-buttons">
+    <div class="insight-card" style="margin-top:8px;">
+      <div class="insight-title">완벽한 원시인 × 모온</div>
+      <div class="insight-text" style="font-size:13px;">인간의 뇌는 10만 년 전에 설계됐다.<br>15개 버튼으로 오늘 나의 회로를 점검하세요.</div>
+    </div>
+
+    <div class="button-level">LEVEL 0 — 생존</div>
+    <div class="button-item"><div class="button-num">B1</div><div><div class="button-name">수면</div><div class="button-desc">글림프 시스템은 수면 중에만 작동. 뇌 독소 청소. 수면 부족 시 편도체 반응성 60% 이상 증가.</div></div></div>
+    <div class="button-item"><div class="button-num">B2</div><div><div class="button-name">물</div><div class="button-desc">탈수 2%만 돼도 인지 기능 저하. 체중(kg)×30ml가 하루 목표.</div></div></div>
+    <div class="button-item"><div class="button-num">B3</div><div><div class="button-name">호흡</div><div class="button-desc">날숨이 길면 뇌가 안전하다고 판단한다. 4-7-8 호흡으로 긴급 진정.</div></div></div>
+
+    <div class="button-level">LEVEL 1 — 항상성</div>
+    <div class="button-item"><div class="button-num">B4</div><div><div class="button-name">햇빛</div><div class="button-desc">아침 15분이 세로토닌 공장을 가동시킨다. 이 세로토닌이 밤에 멜라토닌으로 전환.</div></div></div>
+    <div class="button-item"><div class="button-num">B5</div><div><div class="button-name">걷기</div><div class="button-desc">BDNF 분비. 쪼개진 걸음은 효과 없다. 20분 이상 이어진 걷기가 핵심.</div></div></div>
+    <div class="button-item"><div class="button-num">B6</div><div><div class="button-name">영양</div><div class="button-desc">채소 → 단백질 → 탄수화물 순서만 바꿔도 혈당 스파이크 40% 감소.</div></div></div>
+
+    <div class="button-level">LEVEL 2 — 성장</div>
+    <div class="button-item"><div class="button-num">B7</div><div><div class="button-name">성장 운동</div><div class="button-desc">주 2~3회 근력 운동. 우울증 치료 효과와 동일하다는 연구 다수.</div></div></div>
+    <div class="button-item"><div class="button-num">B8</div><div><div class="button-name">의도된 불편함</div><div class="button-desc">냉수욕 30초. 뇌가 "아직 살아있다"는 신호를 받는다. 도파민 회로 정상화.</div></div></div>
+    <div class="button-item"><div class="button-num">B9</div><div><div class="button-name">투쟁</div><div class="button-desc">측정되지 않는 목표는 뇌에 존재하지 않는다. 이번 주 숫자가 얼마였나로 대화하라.</div></div></div>
+
+    <div class="button-level">LEVEL 3 — 연결</div>
+    <div class="button-item"><div class="button-num">B10</div><div><div class="button-name">부족</div><div class="button-desc">정기적으로 얼굴 보는 소규모 그룹 하나. 운동 모임, 독서 모임, 아무거나.</div></div></div>
+    <div class="button-item"><div class="button-num">B11</div><div><div class="button-name">대면</div><div class="button-desc">온라인은 뇌가 진짜 연결로 인식하지 못한다. 한 달에 한 번이라도 진짜 만나라.</div></div></div>
+    <div class="button-item"><div class="button-num">B12</div><div><div class="button-name">기여</div><div class="button-desc">"내가 도움이 됐다"는 감각이 가장 강력한 행복 자극원 중 하나.</div></div></div>
+    <div class="button-item"><div class="button-num">B13</div><div><div class="button-name">친밀감</div><div class="button-desc">포옹, 악수도 포함. 신체 접촉 자체가 뇌를 안정시킨다.</div></div></div>
+
+    <div class="button-level">LEVEL 4 — 초월</div>
+    <div class="button-item"><div class="button-num">B14</div><div><div class="button-name">여백</div><div class="button-desc">DMN이 꺼지지 않아야 창의성이 나온다. 스마트폰 없이 20분.</div></div></div>
+    <div class="button-item"><div class="button-num">B15</div><div><div class="button-name">몰입</div><div class="button-desc">도전과 실력이 맞아떨어질 때. 알림 차단. 최소 90분 블록.</div></div></div>
+
+    <div class="footer-note">
+      <p>이 트래커는 자청의 <strong>《완벽한 원시인》</strong><br>
+      15버튼 프레임워크를 바탕으로 제작되었습니다.<br><br>
+      <a href="https://www.yes24.com/product/goods/138271458" target="_blank">📖 책 보러가기 →</a></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const state = {
+    intensity: null,
+    reaction: null,
+    energy: null,
+    focus: null,
+    buttons: { sleep: null, water: null, walk: null, meet: null, rest: null, sharp: null },
+    recoveryItems: new Set()
+  };
+
+  // DATE
+  const now = new Date();
+  document.getElementById('todayDate').textContent = now.toLocaleDateString('ko-KR', {
+    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+  });
+
+  // TAB SWITCH
+  function switchTab(tab) {
+    const tabs = ['today','pattern','monthly','buttons'];
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', tabs[i] === tab));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    if (tab === 'pattern') renderPattern();
+    if (tab === 'monthly') renderMonthly();
+  }
+
+  function selectIntensity(val) {
+    state.intensity = val;
+    document.querySelectorAll('#intensityBtns .btn-choice').forEach((b, i) => b.classList.toggle('selected', i+1 === val));
+  }
+
+  function selectReaction(val) {
+    state.reaction = val;
+    document.querySelectorAll('#reactionBtns .btn-choice').forEach(b => b.classList.toggle('selected', b.textContent.trim() === val));
+  }
+
+  function selectRating(type, val) {
+    state[type] = val;
+    const id = type === 'energy' ? 'energyDots' : 'focusDots';
+    document.querySelectorAll('#' + id + ' .dot').forEach((d, i) => d.classList.toggle('selected', i+1 <= val));
+  }
+
+  function selectYN(key, val, el) {
+    state.buttons[key] = val;
+    el.closest('.yn-btns').querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function toggleRecovery(el, val) {
+    if (state.recoveryItems.has(val)) { state.recoveryItems.delete(val); el.classList.remove('selected'); }
+    else { state.recoveryItems.add(val); el.classList.add('selected'); }
+  }
+
+  function saveToday() {
+    const record = {
+      date: now.toISOString().split('T')[0],
+      event: document.getElementById('eventText').value,
+      intensity: state.intensity,
+      reaction: state.reaction,
+      energy: state.energy,
+      focus: state.focus,
+      drain: document.getElementById('drainText').value,
+      buttons: { ...state.buttons },
+      recovery: [...state.recoveryItems],
+      timestamp: Date.now()
+    };
+    const records = getRecords();
+    const idx = records.findIndex(r => r.date === record.date);
+    if (idx >= 0) records[idx] = record; else records.push(record);
+    localStorage.setItem('moon_records', JSON.stringify(records));
+    showToast('🌙 기록됐어요');
+    updateBadge();
+  }
+
+  function getRecords() {
+    try { return JSON.parse(localStorage.getItem('moon_records') || '[]'); } catch { return []; }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function updateBadge() {
+    const records = getRecords();
+    const badge = document.getElementById('recordCountBadge');
+    if (records.length > 0) {
+      badge.textContent = `기록 ${records.length}일`;
+      badge.style.display = 'block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function renderPattern() {
+    const records = getRecords();
+    const el = document.getElementById('patternContent');
+
+    if (records.length < 3) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">🌙</div><p>아직 기록이 <strong>${records.length}개</strong>예요.<br><strong>${3 - records.length}일</strong> 더 기록하면 패턴이 보여요.</p></div>`;
+      return;
+    }
+
+    const frustrations = records.filter(r => r.event && r.intensity);
+    const diffs = { 1: [], 2: [], 3: [] };
+    frustrations.forEach(f => {
+      const fDate = new Date(f.date);
+      [1,2,3].forEach(d => {
+        const t = new Date(fDate);
+        t.setDate(t.getDate() + d);
+        const found = records.find(r => r.date === t.toISOString().split('T')[0]);
+        if (found && found.energy) diffs[d].push(found.energy);
+      });
+    });
+
+    const avg = arr => arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : null;
+    const d1 = avg(diffs[1]), d2 = avg(diffs[2]), d3 = avg(diffs[3]);
+    const vals = [{d:'D+1',v:parseFloat(d1)||0},{d:'D+2',v:parseFloat(d2)||0},{d:'D+3',v:parseFloat(d3)||0}];
+    const lowest = vals.reduce((a,b) => a.v < b.v ? a : b);
+
+    const buttonKeys = { sleep:'수면(B1)', water:'물(B2)', walk:'걷기(B5)', meet:'대면(B11)', rest:'여백(B14)' };
+    const buttonOff = {};
+    Object.keys(buttonKeys).forEach(k => { buttonOff[k] = records.filter(r => r.buttons && r.buttons[k] === 'N').length; });
+    const sortedOff = Object.entries(buttonOff).sort((a,b)=>b[1]-a[1]);
+
+    const allRecovery = {};
+    records.forEach(r => { if(r.recovery) r.recovery.forEach(item => { allRecovery[item]=(allRecovery[item]||0)+1; }); });
+    const topRecovery = Object.entries(allRecovery).sort((a,b)=>b[1]-a[1]).slice(0,2);
+
+    el.innerHTML = `
+      <div class="insight-card" style="margin-top:8px;">
+        <div class="insight-title">나의 방전 패턴</div>
+        <div class="insight-text">${lowest.v > 0 && lowest.v < 3 ? `좌절 후 <strong style="color:var(--peach)">${lowest.d}</strong>에 가장 많이 방전돼요` : records.length >= 3 ? '꾸준히 기록할수록 패턴이 선명해져요 🌿' : '아직 데이터가 쌓이는 중이에요'}</div>
+      </div>
+
+      <div class="section-label">좌절 후 에너지 변화</div>
+      <div class="card">
+        <div class="graph-bar-row">
+          <span class="graph-label" style="color:var(--peach);">⚡사건</span>
+          <div class="graph-track"><div class="graph-fill event" style="width:100%;"></div></div>
+          <span class="graph-num" style="color:var(--peach);">—</span>
+        </div>
+        ${[{l:'D+1',v:d1},{l:'D+2',v:d2},{l:'D+3',v:d3}].map(item => {
+          const pct = item.v ? (parseFloat(item.v)/5*100)+'%' : '0%';
+          const isLow = item.v && parseFloat(item.v) < 3;
+          return `<div class="graph-bar-row">
+            <span class="graph-label">${item.l}</span>
+            <div class="graph-track"><div class="graph-fill ${isLow?'low':'normal'}" style="width:${pct};"></div></div>
+            <span class="graph-num">${item.v || '-'}</span>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div class="section-label">자주 꺼지는 버튼</div>
+      <div class="card">
+        ${sortedOff.slice(0,3).map(([k,v],i) => `
+          <div class="toggle-row" ${i===2?'style="border-bottom:none"':''}>
+            <span style="font-size:12px; color:var(--text-soft);">${['1순위','2순위','3순위'][i]}</span>
+            <span style="font-size:13px; color:var(--navy); font-weight:500; flex:1; margin-left:10px;">${buttonKeys[k]}</span>
+            <span style="font-size:11px; color:var(--text-soft);">${v}회</span>
+          </div>`).join('')}
+      </div>
+
+      ${topRecovery.length > 0 ? `
+      <div class="section-label">회복을 앞당긴 것</div>
+      <div class="card">
+        ${topRecovery.map(([item,cnt],i) => `
+          <div class="toggle-row" ${i===topRecovery.length-1?'style="border-bottom:none"':''}>
+            <span style="font-size:16px;">${['🥇','🥈'][i]}</span>
+            <span style="font-size:13px; color:var(--navy); font-weight:500; flex:1; margin-left:10px;">${item}</span>
+            <span style="font-size:11px; color:var(--text-soft);">${cnt}회</span>
+          </div>`).join('')}
+      </div>` : ''}
+    `;
+  }
+
+  function renderMonthly() {
+    const records = getRecords();
+    const el = document.getElementById('monthlyContent');
+    const thisMonthStr = now.toISOString().slice(0,7);
+    const thisMonth = records.filter(r => r.date && r.date.startsWith(thisMonthStr));
+
+    if (thisMonth.length === 0) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>이번 달 기록이 없어요.<br>매일 저녁 기록해보세요.</p></div>`;
+      return;
+    }
+
+    const frustrations = thisMonth.filter(r => r.event && r.intensity);
+    const drains = {};
+    thisMonth.forEach(r => { if(r.drain && r.drain.trim()) drains[r.drain.trim()] = (drains[r.drain.trim()]||0)+1; });
+    const topDrains = Object.entries(drains).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    const energies = thisMonth.filter(r=>r.energy).map(r=>r.energy);
+    const avgEnergy = energies.length ? (energies.reduce((a,b)=>a+b,0)/energies.length).toFixed(1) : '-';
+    const sleepOk = thisMonth.filter(r=>r.buttons&&r.buttons.sleep==='Y').length;
+
+    el.innerHTML = `
+      <div class="date-chip">${now.getFullYear()}년 ${now.getMonth()+1}월</div>
+
+      <div class="stat-grid">
+        <div class="stat-box"><span class="stat-num">${thisMonth.length}</span><div class="stat-label">기록한 날</div></div>
+        <div class="stat-box"><span class="stat-num">${frustrations.length}</span><div class="stat-label">좌절 사건</div></div>
+        <div class="stat-box"><span class="stat-num">${avgEnergy}</span><div class="stat-label">평균 에너지</div></div>
+        <div class="stat-box"><span class="stat-num">${sleepOk}</span><div class="stat-label">수면 OK 일수</div></div>
+      </div>
+
+      ${topDrains.length > 0 ? `
+      <div class="section-label">이달의 소진 트리거</div>
+      ${topDrains.map(([item,cnt],i) => `
+        <div class="trigger-item">
+          <span class="trigger-rank">${i+1}</span>
+          <span style="flex:1;">${item}</span>
+          <span style="font-size:11px; color:var(--text-soft);">${cnt}회</span>
+        </div>`).join('')}` : ''}
+
+      <button class="share-btn" onclick="copyLink()">🔗 링크 복사 → 카톡에 붙여넣기</button>
+
+      <div class="footer-note" style="margin-top:24px;">
+        <p>이 트래커는 자청의 <strong>《완벽한 원시인》</strong><br>
+        15버튼 프레임워크를 바탕으로 제작되었습니다.<br><br>
+        <a href="https://www.yes24.com/product/goods/138271458" target="_blank">📖 책 보러가기 →</a></p>
+      </div>
+    `;
+  }
+
+  function copyLink() {
+    const url = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => showToast('🔗 링크 복사됐어요. 카톡에 붙여넣기!'));
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('🔗 링크 복사됐어요!');
+    }
+  }
+
+  updateBadge();
+</script>
+</body>
+</html>
